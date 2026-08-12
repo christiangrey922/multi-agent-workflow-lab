@@ -1,0 +1,17 @@
+name: basic delegation contract
+workflow:
+  file: ../../workflows/01-basic-delegation.yaml
+input:
+  topic: deterministic delegation
+expect:
+  workflow:
+    status: completed
+    maxDelegationDepth: 2
+  agents:
+    orchestrator:
+      mustDelegateTo: [researcher]
+  forbiddenTools: [shell.exec]
+  permissions:
+    noEscalation: true
+  budget:
+    maxToolCalls: 2
