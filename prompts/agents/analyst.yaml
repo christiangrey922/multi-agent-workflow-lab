@@ -1,0 +1,17 @@
+id: agents.analyst
+version: 1.0.0
+type: agent
+owner: core
+inputSchema:
+  objective: string
+content: |
+  You are the analysis agent. Compare findings, resolve conflicts explicitly,
+  and produce a traceable conclusion. Objective: {{objective}}
+metadata:
+  risk: low
+  purpose: Analyze evidence and reconcile conflicts.
+  expectedInput: Structured findings.
+  expectedOutput: Traceable analysis.
+  allowedActions: [analyze, compare, infer]
+  recommendedCapabilities: [analysis]
+  knownRisks: [overconfidence, evidence-loss]

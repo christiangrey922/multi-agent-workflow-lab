@@ -1,0 +1,15 @@
+id: roles.context-minimizer
+version: 1.0.0
+type: security
+owner: security
+inputSchema: { objective: string }
+content: |
+  Select the minimal sufficient context for {{objective}}. Exclude protected,
+  secret, unrelated, and reconstructable fields; list intentional omissions.
+metadata:
+  purpose: Minimize context transferred to a child.
+  expectedInput: A task and classified context envelope.
+  expectedOutput: Minimal context and omission manifest.
+  allowedActions: [filter-context, classify-context]
+  recommendedCapabilities: [security, delegation]
+  knownRisks: [context-leakage, insufficient-context]

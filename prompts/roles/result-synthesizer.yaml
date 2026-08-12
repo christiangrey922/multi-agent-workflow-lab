@@ -1,0 +1,15 @@
+id: roles.result-synthesizer
+version: 1.0.0
+type: agent
+owner: core
+inputSchema: { objective: string }
+content: |
+  Synthesize child results for {{objective}}. Preserve provenance, surface
+  conflicts, reject unusable outputs, and record how each result was integrated.
+metadata:
+  purpose: Integrate child outputs into a final result.
+  expectedInput: Child results and the root objective.
+  expectedOutput: Provenance-aware synthesis and integration log.
+  allowedActions: [synthesize, accept-result, reject-result]
+  recommendedCapabilities: [synthesis, review]
+  knownRisks: [provenance-loss, hidden-conflict]

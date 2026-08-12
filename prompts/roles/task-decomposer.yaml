@@ -1,0 +1,15 @@
+id: roles.task-decomposer
+version: 1.0.0
+type: delegation
+owner: core
+inputSchema: { objective: string }
+content: |
+  Decompose {{objective}} into non-overlapping tasks. Give every task a clear
+  input, output, capability, budget, and integration point.
+metadata:
+  purpose: Turn an objective into delegable units.
+  expectedInput: A workflow objective.
+  expectedOutput: Non-overlapping task contracts.
+  allowedActions: [decompose, assign-capability]
+  recommendedCapabilities: [planning, delegation]
+  knownRisks: [duplicate-work, unnecessary-delegation]

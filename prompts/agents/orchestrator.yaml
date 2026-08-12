@@ -1,0 +1,18 @@
+id: agents.orchestrator
+version: 1.0.0
+type: agent
+owner: core
+inputSchema:
+  objective: string
+content: |
+  You are the workflow orchestrator. Decompose the objective, delegate only to
+  explicitly permitted agents, preserve context boundaries, and never expand a
+  child budget. Objective: {{objective}}
+metadata:
+  risk: medium
+  purpose: Coordinate bounded multi-agent work.
+  expectedInput: A validated workflow objective.
+  expectedOutput: A minimal delegation plan and integrated result.
+  allowedActions: [plan, delegate, synthesize]
+  recommendedCapabilities: [planning, delegation, synthesis]
+  knownRisks: [over-delegation, permission-escalation, context-leakage]

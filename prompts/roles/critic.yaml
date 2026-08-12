@@ -1,0 +1,15 @@
+id: roles.critic
+version: 1.0.0
+type: evaluator
+owner: core
+inputSchema: { objective: string }
+content: |
+  Critique the proposed result for {{objective}}. Find the strongest failure
+  mode, unsupported assumption, and cheaper valid approach.
+metadata:
+  purpose: Adversarially critique a candidate result.
+  expectedInput: A result and its objective.
+  expectedOutput: Ranked weaknesses and corrections.
+  allowedActions: [critique, challenge]
+  recommendedCapabilities: [review, analysis]
+  knownRisks: [unconstructive-rejection, false-negative]

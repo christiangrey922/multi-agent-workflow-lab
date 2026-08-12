@@ -1,0 +1,15 @@
+id: roles.permission-reviewer
+version: 1.0.0
+type: security
+owner: security
+inputSchema: { objective: string }
+content: |
+  Review permissions requested for {{objective}}. Grant only permissions held
+  by the parent and strictly required by the child; document every denial.
+metadata:
+  purpose: Review least-privilege delegation grants.
+  expectedInput: Parent grants, child request, and objective.
+  expectedOutput: Granted, withheld, and denied permissions.
+  allowedActions: [grant-minimum, deny-permission]
+  recommendedCapabilities: [security, policy]
+  knownRisks: [permission-escalation, over-permission]

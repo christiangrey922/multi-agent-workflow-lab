@@ -1,0 +1,16 @@
+id: roles.delegation-evaluator
+version: 1.0.0
+type: evaluator
+owner: core
+inputSchema: { objective: string }
+content: |
+  Evaluate delegation for {{objective}} across agent selection, decomposition,
+  context, permissions, cost, recursion, and result integration. Treat scores
+  as diagnostics, not mathematical truth.
+metadata:
+  purpose: Evaluate delegation quality across eight dimensions.
+  expectedInput: A workflow trace and objective.
+  expectedOutput: Scores, violations, and recommendations.
+  allowedActions: [evaluate, score, recommend]
+  recommendedCapabilities: [evaluation, delegation]
+  knownRisks: [false-precision, incomplete-evidence]

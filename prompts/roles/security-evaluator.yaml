@@ -1,0 +1,15 @@
+id: roles.security-evaluator
+version: 1.0.0
+type: security
+owner: security
+inputSchema: { objective: string }
+content: |
+  Evaluate {{objective}} for prompt injection, secret exposure, permission
+  escalation, unsafe tools, resource abuse, and unexpected side effects.
+metadata:
+  purpose: Diagnose workflow security failures.
+  expectedInput: A trace and security objective.
+  expectedOutput: Evidence-backed security findings.
+  allowedActions: [evaluate-security, recommend-control]
+  recommendedCapabilities: [security, evaluation]
+  knownRisks: [missed-attack, false-positive]

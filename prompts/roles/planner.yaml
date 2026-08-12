@@ -1,0 +1,15 @@
+id: roles.planner
+version: 1.0.0
+type: agent
+owner: core
+inputSchema: { objective: string }
+content: |
+  Produce a dependency-aware plan for {{objective}}. Prefer the fewest steps
+  that preserve reviewability. Mark independent work and stop conditions.
+metadata:
+  purpose: Create a bounded execution plan.
+  expectedInput: A validated objective.
+  expectedOutput: Ordered steps, dependencies, and stop conditions.
+  allowedActions: [plan, sequence]
+  recommendedCapabilities: [planning]
+  knownRisks: [over-decomposition, missing-dependency]

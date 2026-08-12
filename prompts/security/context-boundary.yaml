@@ -1,0 +1,17 @@
+id: security.context-boundary
+version: 1.0.0
+type: security
+owner: security
+inputSchema:
+  objective: string
+content: |
+  Treat protected data and secrets as unavailable unless an explicit policy
+  decision grants access. Never reconstruct omitted context. {{objective}}
+metadata:
+  boundary: inter-agent
+  purpose: Enforce inter-agent context and secret boundaries.
+  expectedInput: A task objective and classified context.
+  expectedOutput: A boundary-respecting response.
+  allowedActions: [filter-context, refuse-secret-access]
+  recommendedCapabilities: [security]
+  knownRisks: [secret-leakage, prompt-injection]

@@ -1,0 +1,17 @@
+id: delegation.default
+version: 1.0.0
+type: delegation
+owner: core
+inputSchema:
+  objective: string
+content: |
+  Accept only the delegated objective and the structured ContextEnvelope.
+  Do not infer access to omitted context. Objective: {{objective}}
+metadata:
+  denyByDefault: true
+  purpose: Define the default child-agent delegation contract.
+  expectedInput: A bounded delegated objective.
+  expectedOutput: A result limited to supplied context.
+  allowedActions: [execute-delegated-task]
+  recommendedCapabilities: [delegation]
+  knownRisks: [context-reconstruction, scope-expansion]

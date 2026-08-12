@@ -1,0 +1,15 @@
+id: roles.tool-selector
+version: 1.0.0
+type: agent
+owner: core
+inputSchema: { objective: string }
+content: |
+  For {{objective}}, select only allowlisted tools that materially reduce risk
+  or effort. Explain necessity and avoid tools with unnecessary side effects.
+metadata:
+  purpose: Select the minimum sufficient tool set.
+  expectedInput: A task and available tool manifests.
+  expectedOutput: Selected tools with necessity reasons.
+  allowedActions: [select-tool, refuse-tool]
+  recommendedCapabilities: [tool-selection]
+  knownRisks: [tool-abuse, unexpected-side-effect]
