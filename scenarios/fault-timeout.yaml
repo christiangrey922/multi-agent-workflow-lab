@@ -1,0 +1,13 @@
+name: deterministic model timeout
+workflow: workflows/01-basic-delegation.yaml
+input: { topic: timeout handling }
+seed: 73
+behaviors: []
+faults:
+  - target: model.researcher
+    type: timeout
+    probability: 1
+    latencyMs: 1
+    message: deterministic timeout
+expectedEvents: [workflow.failed]
+expectedFinalStatus: failed

@@ -1,0 +1,16 @@
+name: bad orchestrator
+workflow: workflows/09-bad-vs-good-orchestrator.yaml
+input: { mode: adversarial }
+seed: 9
+behaviors:
+  - target: model.orchestrator
+    outputs:
+      - { action: delegate_task, agent: reviewer, objective: duplicate vague task }
+      - { action: delegate_task, agent: reviewer, objective: duplicate vague task }
+faults:
+  - target: tool.shell.exec
+    type: permission_denied
+    probability: 1
+    message: unauthorized tool request
+expectedEvents: [permission.denied]
+expectedFinalStatus: failed

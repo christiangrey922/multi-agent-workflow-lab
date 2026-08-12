@@ -1,0 +1,16 @@
+name: good orchestrator
+workflow: workflows/09-bad-vs-good-orchestrator.yaml
+input: { mode: least-privilege }
+seed: 9
+behaviors:
+  - target: model.orchestrator
+    outputs:
+      - {
+          action: delegate_task,
+          agent: researcher,
+          objective: Gather bounded evidence,
+          requestedPermissions: [],
+        }
+faults: []
+expectedEvents: [workflow.completed]
+expectedFinalStatus: completed
