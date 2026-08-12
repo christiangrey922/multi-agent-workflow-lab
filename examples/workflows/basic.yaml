@@ -1,0 +1,38 @@
+id: basic-typed-agent
+name: Basic Typed-Agent Workflow
+description: A bounded local workflow with observable delegation and fan-in.
+entryAgent: orchestrator
+agents: [orchestrator, researcher, analyst]
+steps:
+  - id: plan
+    agent: orchestrator
+    objective: Plan two bounded research tasks.
+  - id: research-a
+    agent: researcher
+    capability: research
+    objective: Gather implementation evidence.
+    dependsOn: [plan]
+    parentStepId: plan
+  - id: research-b
+    agent: researcher
+    capability: research
+    objective: Gather security evidence.
+    dependsOn: [plan]
+    parentStepId: plan
+  - id: join
+    agent: analyst
+    capability: analysis
+    objective: Merge both evidence sets into one conclusion.
+    dependsOn: [research-a, research-b]
+    parentStepId: plan
+requiredEvaluations: [fan-in-complete]
+successConditions: [all bounded tasks complete]
+limits:
+  maxDelegationDepth: 3
+  maxChildTasksPerTask: 4
+  maxTotalTasks: 10
+  maxAgentTurns: 10
+  maxToolCalls: 20
+  maxRetries: 1
+  maxRuntimeMs: 120000
+  maxTokenBudget: 30000

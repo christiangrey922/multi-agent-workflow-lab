@@ -1,0 +1,10 @@
+id: public-search
+transport: streamable_http
+url: https://example.invalid/mcp
+env: {}
+permissions: [network.read]
+trusted: false
+allowedTools: [search]
+timeoutMs: 10000
+metadata:
+  purpose: inspection-only sample; replace URL before connecting

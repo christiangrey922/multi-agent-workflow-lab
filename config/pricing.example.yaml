@@ -1,0 +1,11 @@
+currency: USD
+effectiveDate: YYYY-MM-DD
+entries:
+  - provider: example-provider
+    model: example-model
+    inputPerMillion: 0
+    outputPerMillion: 0
+    cachedPerMillion: 0
+notes:
+  - Replace example values with current contractual pricing.
+  - Keep pricing data versioned independently from runtime code.
