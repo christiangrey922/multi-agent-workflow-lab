@@ -1,0 +1,31 @@
+id: researcher
+name: Researcher
+description: Collects evidence and produces structured findings.
+role: researcher
+capabilities: [research, summarization]
+systemPrompt: agents.researcher
+systemPromptVersion: 1.0.0
+allowedTools: [web.search, filesystem.read, mcp.mock.search, sandbox.echo]
+allowedMcpServers: [public-search, mock]
+permissionProfile:
+  grants: [context:public, context:workflow, task:create]
+  denied: [filesystem:write, secret:read]
+  allowSecrets: false
+delegationPolicy:
+  allowed: true
+  maxDepth: 4
+  allowedTargets: [analyst]
+  allowedCapabilities: [analysis]
+  maxChildTasks: 2
+model:
+  provider: mock
+  model: deterministic-v1
+  temperature: 0
+executionLimits:
+  maxAgentTurns: 8
+  maxToolCalls: 10
+  maxRetries: 1
+  maxRuntimeMs: 30000
+  maxTokenBudget: 15000
+metadata:
+  owner: core

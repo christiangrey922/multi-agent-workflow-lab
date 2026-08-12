@@ -1,0 +1,28 @@
+{
+  "name": "@mawl/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "mawl": "./dist/main.js"
+  },
+  "scripts": {
+    "build": "tsup src/main.ts --format esm --clean",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@mawl/agents": "workspace:*",
+    "@mawl/core": "workspace:*",
+    "@mawl/evaluation": "workspace:*",
+    "@mawl/mcp": "workspace:*",
+    "@mawl/observability": "workspace:*",
+    "@mawl/prompts": "workspace:*",
+    "@mawl/runtime": "workspace:*",
+    "@mawl/sandbox": "workspace:*",
+    "@mawl/storage": "workspace:*",
+    "@mawl/testing": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  }
+}

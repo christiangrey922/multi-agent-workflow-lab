@@ -1,0 +1,31 @@
+id: analyst
+name: Analyst
+description: Analyzes findings, resolves conflicts, and produces conclusions.
+role: analyst
+capabilities: [analysis, synthesis]
+systemPrompt: agents.analyst
+systemPromptVersion: 1.0.0
+allowedTools: [workflow.inspect]
+allowedMcpServers: []
+permissionProfile:
+  grants: [context:public, context:workflow, task:create]
+  denied: [secret:read]
+  allowSecrets: false
+delegationPolicy:
+  allowed: true
+  maxDepth: 4
+  allowedTargets: [reviewer]
+  allowedCapabilities: [review]
+  maxChildTasks: 1
+model:
+  provider: mock
+  model: deterministic-v1
+  temperature: 0
+executionLimits:
+  maxAgentTurns: 8
+  maxToolCalls: 5
+  maxRetries: 1
+  maxRuntimeMs: 30000
+  maxTokenBudget: 15000
+metadata:
+  owner: core

@@ -1,0 +1,27 @@
+id: loop-a
+name: Loop Test Agent A
+description: Test-only agent used to prove recursion controls.
+role: adversarial-test-agent
+capabilities: [planning, delegation]
+systemPrompt: agents.orchestrator
+systemPromptVersion: 1.0.0
+allowedTools: []
+allowedMcpServers: []
+permissionProfile:
+  grants: [context:public, context:workflow, task:create]
+  denied: [secret:read]
+  allowSecrets: false
+delegationPolicy:
+  allowed: true
+  maxDepth: 4
+  allowedTargets: [loop-b]
+  allowedCapabilities: [delegation]
+  maxChildTasks: 2
+model: { provider: mock, model: deterministic-v1, temperature: 0 }
+executionLimits:
+  maxAgentTurns: 4
+  maxToolCalls: 0
+  maxRetries: 0
+  maxRuntimeMs: 5000
+  maxTokenBudget: 2000
+metadata: { testOnly: true }

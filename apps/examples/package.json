@@ -1,0 +1,28 @@
+{
+  "name": "@mawl/examples",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup src/run.ts src/security-demo.ts --format esm --platform node --clean",
+    "start": "node dist/run.js",
+    "security": "node dist/security-demo.js"
+  },
+  "dependencies": {
+    "@mawl/agents": "workspace:*",
+    "@mawl/auth": "workspace:*",
+    "@mawl/core": "workspace:*",
+    "@mawl/mcp": "workspace:*",
+    "@mawl/observability": "workspace:*",
+    "@mawl/permissions": "workspace:*",
+    "@mawl/prompts": "workspace:*",
+    "@mawl/runtime": "workspace:*",
+    "@mawl/storage": "workspace:*",
+    "@mawl/testing": "workspace:*",
+    "@mawl/tools": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  }
+}

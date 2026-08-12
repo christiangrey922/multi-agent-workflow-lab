@@ -1,0 +1,31 @@
+id: orchestrator
+name: Orchestrator
+description: Plans the workflow and delegates bounded work.
+role: workflow-orchestrator
+capabilities: [planning, delegation, synthesis]
+systemPrompt: agents.orchestrator
+systemPromptVersion: 1.0.0
+allowedTools: [workflow.inspect]
+allowedMcpServers: []
+permissionProfile:
+  grants: [context:public, context:workflow, task:create]
+  denied: [secret:read]
+  allowSecrets: false
+delegationPolicy:
+  allowed: true
+  maxDepth: 4
+  allowedTargets: [researcher, analyst]
+  allowedCapabilities: [research, analysis]
+  maxChildTasks: 4
+model:
+  provider: mock
+  model: deterministic-v1
+  temperature: 0
+executionLimits:
+  maxAgentTurns: 10
+  maxToolCalls: 10
+  maxRetries: 1
+  maxRuntimeMs: 30000
+  maxTokenBudget: 20000
+metadata:
+  owner: core
