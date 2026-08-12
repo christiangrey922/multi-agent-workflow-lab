@@ -1,0 +1,38 @@
+id: parallel-research
+name: Parallel Research Fan-out and Fan-in
+description: Runs two research tasks concurrently and joins them at analysis.
+entryAgent: orchestrator
+agents: [orchestrator, researcher, analyst]
+steps:
+  - id: orchestrate
+    agent: orchestrator
+    objective: Plan two independent research tracks.
+  - id: research-a
+    agent: researcher
+    capability: research
+    objective: Investigate the objective from the implementation perspective.
+    dependsOn: [orchestrate]
+    parentStepId: orchestrate
+  - id: research-b
+    agent: researcher
+    capability: research
+    objective: Investigate the objective from the security perspective.
+    dependsOn: [orchestrate]
+    parentStepId: orchestrate
+  - id: analyze
+    agent: analyst
+    capability: analysis
+    objective: Merge both research tracks and reconcile conflicts.
+    dependsOn: [research-a, research-b]
+    parentStepId: orchestrate
+requiredEvaluations: [fan-in-complete]
+successConditions: [both research tracks complete before analysis]
+limits:
+  maxDelegationDepth: 3
+  maxChildTasksPerTask: 4
+  maxTotalTasks: 10
+  maxAgentTurns: 10
+  maxToolCalls: 20
+  maxRetries: 1
+  maxRuntimeMs: 120000
+  maxTokenBudget: 30000

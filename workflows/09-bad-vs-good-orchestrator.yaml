@@ -1,0 +1,40 @@
+id: 09-bad-vs-good-orchestrator
+name: Bad versus good orchestrator
+description: The good baseline used by comparative tests against a synthetic bad trace.
+entryAgent: orchestrator
+agents: [orchestrator, researcher, analyst]
+steps:
+  - {
+      id: orchestrate,
+      agent: orchestrator,
+      objective: Choose the minimum sufficient specialist chain.,
+    }
+  - {
+      id: research,
+      agent: researcher,
+      capability: research,
+      objective: Gather only evidence needed for the decision.,
+      dependsOn: [orchestrate],
+      parentStepId: orchestrate,
+    }
+  - {
+      id: analyze,
+      agent: analyst,
+      capability: analysis,
+      objective: Analyze and integrate the bounded research result.,
+      dependsOn: [research],
+      parentStepId: research,
+    }
+requiredEvaluations: [bad-good-comparison]
+successConditions: [good trace scores above adversarial bad trace]
+limits:
+  {
+    maxDelegationDepth: 3,
+    maxChildTasksPerTask: 2,
+    maxTotalTasks: 6,
+    maxAgentTurns: 6,
+    maxToolCalls: 4,
+    maxRetries: 0,
+    maxRuntimeMs: 20000,
+    maxTokenBudget: 12000,
+  }

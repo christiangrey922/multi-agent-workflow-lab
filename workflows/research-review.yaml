@@ -1,0 +1,55 @@
+id: research-review
+name: Sequential Research Review
+description: Demonstrates a fully observable five-agent delegation chain.
+entryAgent: orchestrator
+agents: [orchestrator, researcher, analyst, reviewer, evaluator]
+steps:
+  - id: orchestrate
+    agent: orchestrator
+    objective: Plan a bounded research and review workflow.
+    context:
+      public: { topic: multi-agent delegation }
+      workflow: { mode: sequential }
+      taskLocal: {}
+      protected: { internalNote: never pass this field }
+      secrets: {}
+      explicitlyOmitted: [internalNote]
+  - id: research
+    agent: researcher
+    capability: research
+    objective: Gather structured findings for the objective.
+    dependsOn: [orchestrate]
+    parentStepId: orchestrate
+  - id: analyze
+    agent: analyst
+    capability: analysis
+    objective: Analyze the research findings and identify contradictions.
+    dependsOn: [research]
+    parentStepId: research
+  - id: review
+    agent: reviewer
+    capability: review
+    objective: Review evidence quality and policy compliance.
+    dependsOn: [analyze]
+    parentStepId: analyze
+  - id: evaluate
+    agent: evaluator
+    capability: evaluation
+    objective: Accept or reject the delegation process and final result.
+    dependsOn: [review]
+    parentStepId: review
+requiredEvaluations:
+  - delegation-policy
+  - output-quality
+successConditions:
+  - every task completes
+  - evaluator accepts the result
+limits:
+  maxDelegationDepth: 4
+  maxChildTasksPerTask: 4
+  maxTotalTasks: 20
+  maxAgentTurns: 20
+  maxToolCalls: 30
+  maxRetries: 1
+  maxRuntimeMs: 120000
+  maxTokenBudget: 50000

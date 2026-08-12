@@ -1,0 +1,28 @@
+id: 01-basic-delegation
+name: Basic delegation
+description: Orchestrator delegates one bounded task to a researcher.
+entryAgent: orchestrator
+agents: [orchestrator, researcher]
+steps:
+  - id: orchestrate
+    agent: orchestrator
+    objective: Plan one bounded research task for the supplied topic.
+  - id: research
+    agent: researcher
+    capability: research
+    objective: Research the supplied topic and return structured findings.
+    dependsOn: [orchestrate]
+    parentStepId: orchestrate
+requiredEvaluations: [delegation-quality]
+successConditions: [research result is integrated]
+limits:
+  {
+    maxDelegationDepth: 2,
+    maxChildTasksPerTask: 2,
+    maxTotalTasks: 4,
+    maxAgentTurns: 5,
+    maxToolCalls: 3,
+    maxRetries: 1,
+    maxRuntimeMs: 30000,
+    maxTokenBudget: 10000,
+  }

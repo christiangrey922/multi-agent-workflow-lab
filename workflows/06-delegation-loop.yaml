@@ -1,0 +1,36 @@
+id: 06-delegation-loop
+name: Delegation loop
+description: Two test agents try to form an A to B to A recursion cycle.
+entryAgent: loop-a
+agents: [loop-a, loop-b]
+steps:
+  - { id: a-root, agent: loop-a, objective: Begin the controlled delegation recursion test. }
+  - {
+      id: b-child,
+      agent: loop-b,
+      capability: delegation,
+      objective: Delegate the same work back to the original agent.,
+      dependsOn: [a-root],
+      parentStepId: a-root,
+    }
+  - {
+      id: a-loop,
+      agent: loop-a,
+      capability: delegation,
+      objective: Repeat the delegated task and create a recursion loop.,
+      dependsOn: [b-child],
+      parentStepId: b-child,
+    }
+requiredEvaluations: [delegation-loop-blocked]
+successConditions: [runtime stops the recursive delegation]
+limits:
+  {
+    maxDelegationDepth: 4,
+    maxChildTasksPerTask: 2,
+    maxTotalTasks: 6,
+    maxAgentTurns: 5,
+    maxToolCalls: 0,
+    maxRetries: 0,
+    maxRuntimeMs: 10000,
+    maxTokenBudget: 5000,
+  }

@@ -1,0 +1,56 @@
+id: 03-review-chain
+name: Review chain
+description: Researcher, analyst, reviewer, and evaluator form a review chain.
+entryAgent: orchestrator
+agents: [orchestrator, researcher, analyst, reviewer, evaluator]
+steps:
+  - {
+      id: orchestrate,
+      agent: orchestrator,
+      objective: Plan a research and independent review chain.,
+    }
+  - {
+      id: research,
+      agent: researcher,
+      capability: research,
+      objective: Research evidence for the requested claim.,
+      dependsOn: [orchestrate],
+      parentStepId: orchestrate,
+    }
+  - {
+      id: analyze,
+      agent: analyst,
+      capability: analysis,
+      objective: Analyze the evidence and surface contradictions.,
+      dependsOn: [research],
+      parentStepId: research,
+    }
+  - {
+      id: review,
+      agent: reviewer,
+      capability: review,
+      objective: Review evidence quality and policy compliance.,
+      dependsOn: [analyze],
+      parentStepId: analyze,
+    }
+  - {
+      id: evaluate,
+      agent: evaluator,
+      capability: evaluation,
+      objective: Evaluate the reviewed result against success criteria.,
+      dependsOn: [review],
+      parentStepId: review,
+    }
+requiredEvaluations: [quality, delegation-quality]
+successConditions: [every review stage completes]
+limits:
+  {
+    maxDelegationDepth: 4,
+    maxChildTasksPerTask: 2,
+    maxTotalTasks: 8,
+    maxAgentTurns: 10,
+    maxToolCalls: 8,
+    maxRetries: 1,
+    maxRuntimeMs: 30000,
+    maxTokenBudget: 20000,
+  }

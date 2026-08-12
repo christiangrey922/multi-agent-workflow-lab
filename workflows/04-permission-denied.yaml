@@ -1,0 +1,32 @@
+id: 04-permission-denied
+name: Permission denied
+description: Deliberately asks the orchestrator to target a non-allowlisted reviewer.
+entryAgent: orchestrator
+agents: [orchestrator, reviewer]
+steps:
+  - {
+      id: orchestrate,
+      agent: orchestrator,
+      objective: Attempt a prohibited direct review delegation.,
+    }
+  - {
+      id: prohibited-review,
+      agent: reviewer,
+      capability: review,
+      objective: Perform a direct review without an authorized delegation path.,
+      dependsOn: [orchestrate],
+      parentStepId: orchestrate,
+    }
+requiredEvaluations: [permission-denial-recorded]
+successConditions: [runtime denies the unauthorized delegation]
+limits:
+  {
+    maxDelegationDepth: 2,
+    maxChildTasksPerTask: 2,
+    maxTotalTasks: 4,
+    maxAgentTurns: 4,
+    maxToolCalls: 2,
+    maxRetries: 0,
+    maxRuntimeMs: 10000,
+    maxTokenBudget: 4000,
+  }

@@ -1,0 +1,40 @@
+id: 08-budget-exceeded
+name: Budget exceeded
+description: Deliberately sets a workflow-wide token budget below one mock call.
+entryAgent: orchestrator
+agents: [orchestrator, researcher]
+steps:
+  - {
+      id: orchestrate,
+      agent: orchestrator,
+      objective: Begin a workflow whose resource budget is intentionally exhausted.,
+    }
+  - {
+      id: research,
+      agent: researcher,
+      capability: research,
+      objective: This task must not start after the workflow budget is exhausted.,
+      dependsOn: [orchestrate],
+      parentStepId: orchestrate,
+    }
+requiredEvaluations: [budget-stop-recorded]
+successConditions: [runtime terminates at the budget boundary]
+budget:
+  {
+    maxTotalTokens: 1,
+    maxModelCalls: 1,
+    maxToolCalls: 1,
+    maxRuntimeMs: 10000,
+    onExhausted: terminate,
+  }
+limits:
+  {
+    maxDelegationDepth: 2,
+    maxChildTasksPerTask: 2,
+    maxTotalTasks: 4,
+    maxAgentTurns: 5,
+    maxToolCalls: 2,
+    maxRetries: 0,
+    maxRuntimeMs: 20000,
+    maxTokenBudget: 8000,
+  }

@@ -1,0 +1,44 @@
+id: 02-parallel-research
+name: Parallel research
+description: Two independent research tasks fan out and an analyst joins them.
+entryAgent: orchestrator
+agents: [orchestrator, researcher, analyst]
+steps:
+  - { id: orchestrate, agent: orchestrator, objective: Plan two independent research tracks. }
+  - {
+      id: research-a,
+      agent: researcher,
+      capability: research,
+      objective: Research implementation evidence for the topic.,
+      dependsOn: [orchestrate],
+      parentStepId: orchestrate,
+    }
+  - {
+      id: research-b,
+      agent: researcher,
+      capability: research,
+      objective: Research security evidence for the topic.,
+      dependsOn: [orchestrate],
+      parentStepId: orchestrate,
+    }
+  - {
+      id: analyze,
+      agent: analyst,
+      capability: analysis,
+      objective: Analyze and reconcile both research tracks.,
+      dependsOn: [research-a, research-b],
+      parentStepId: orchestrate,
+    }
+requiredEvaluations: [fan-in-complete]
+successConditions: [both research tracks finish before analysis]
+limits:
+  {
+    maxDelegationDepth: 3,
+    maxChildTasksPerTask: 4,
+    maxTotalTasks: 8,
+    maxAgentTurns: 8,
+    maxToolCalls: 6,
+    maxRetries: 1,
+    maxRuntimeMs: 30000,
+    maxTokenBudget: 16000,
+  }
