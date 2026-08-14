@@ -23,6 +23,7 @@ This index separates the one-minute project overview in the root [README](../REA
 ## Prompts and inputs
 
 - [Prompt processing](prompt-processing.md) — registry versions/hashes, strict variables, provenance, and trust layers.
+- [Prompt-injection signals](prompt-injection.md) — deterministic diagnostics for untrusted user, tool, MCP, and child-agent content.
 - [Input parsers](input-parsers.md) — JSON, YAML, Markdown, text, and structured-task normalization.
 
 ## Testing and release

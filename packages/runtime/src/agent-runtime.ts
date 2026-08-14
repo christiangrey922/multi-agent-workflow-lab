@@ -15,7 +15,7 @@ import {
   type ModelProvider,
   type Task,
 } from '@mawl/core';
-import type { EventBus } from '@mawl/observability';
+import { emitPromptInjectionSignals, type EventBus } from '@mawl/observability';
 import type { NormalizedInput } from '@mawl/parsers';
 import { DelegationPolicy, type PermissionEngine } from '@mawl/permissions';
 import type { SystemPromptProcessor } from '@mawl/prompts';
@@ -110,6 +110,9 @@ export class AgentRuntime {
     };
     const startedAt = Date.now();
     const toolOutputs: JsonValue[] = [];
+    const mcpOutputs: JsonValue[] = [];
+    const childOutputs: JsonValue[] = [];
+    const emittedPromptInjectionSignalIds = new Set<string>();
     const normalizedInput = normalizeInput(input.input);
 
     await this.emit('agent.runtime.started', traceId, task, {
@@ -133,7 +136,21 @@ export class AgentRuntime {
           ...(input.context ? { runtimeContext: input.context } : {}),
           userInput: normalizedInput.parsed,
           toolOutput: toolOutputs,
+          mcpOutput: mcpOutputs,
+          childOutput: childOutputs,
         });
+        const newPromptInjectionSignals = prompt.promptInjectionSignals.filter(
+          (signal) => !emittedPromptInjectionSignalIds.has(signal.id),
+        );
+        await emitPromptInjectionSignals(this.dependencies.eventBus, newPromptInjectionSignals, {
+          workflowId: task.workflowId,
+          taskId: task.taskId,
+          agentId: task.assignedToAgent,
+          traceId,
+        });
+        for (const signal of newPromptInjectionSignals) {
+          emittedPromptInjectionSignalIds.add(signal.id);
+        }
         await this.emit('prompt.assembled', traceId, task, {
           promptHash: prompt.renderedHash,
           layers: prompt.layers.map((layer) => ({
@@ -225,12 +242,14 @@ export class AgentRuntime {
               agent.executionLimits.maxRetries,
             );
           }
-          toolOutputs.push({
+          const untrustedOutput = {
             tool: action.tool,
             status: toolResult.error ? 'failed' : 'completed',
             output: toolResult.output ?? null,
             errorCode: toolResult.errorCode ?? null,
-          });
+          } satisfies JsonValue;
+          if (toolResult.mcpServer) mcpOutputs.push(untrustedOutput);
+          else toolOutputs.push(untrustedOutput);
           continue;
         }
 
@@ -262,7 +281,7 @@ export class AgentRuntime {
             traceId,
             ...(input.signal ? { signal: input.signal } : {}),
           });
-          toolOutputs.push({
+          childOutputs.push({
             delegationTaskId: delegated.taskId,
             output: delegated.result ?? null,
           });

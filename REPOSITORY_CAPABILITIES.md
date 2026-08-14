@@ -22,7 +22,7 @@ Status reflects the v0.1.0 release candidate and describes local implementation,
 | Human approval             | Implemented     | Provider interface, CLI provider, deterministic auto-approve/deny; no hosted approval UI                      |
 | Replay                     | Implemented     | Exact, dry-run, model-rerun, guarded tool-rerun                                                               |
 | Scenario and fault testing | Implemented     | Scripted behavior and deterministic seeded faults                                                             |
-| Security tests             | Implemented     | Twenty dedicated security tests plus red-team and end-to-end coverage                                         |
+| Security tests             | Implemented     | Forty dedicated security tests plus red-team and end-to-end coverage                                          |
 | Real model provider        | Partial         | OpenAI-compatible adapter available; CLI defaults to mock and does not load credentials                       |
 | Distributed runtime        | Not implemented | Future extension; no queue or multi-node coordination                                                         |
 | Remote telemetry backend   | Not implemented | Event/export interfaces exist; no bundled OpenTelemetry exporter or hosted service                            |

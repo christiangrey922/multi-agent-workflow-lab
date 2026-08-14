@@ -26,7 +26,7 @@ MAWL makes those decisions explicit, policy-controlled, and traceable. Prompts a
 | MCP                      | Official stdio and Streamable HTTP client adapters plus an in-memory mock connector; MCP data remains untrusted                            |
 | Sandbox                  | Restricted local-process adapter and optional Docker provider interface with auditable lifecycle events                                    |
 | Identity and permissions | Runtime-issued agent identity, local development auth, deny-by-default permission and contextual policy engines                            |
-| Prompt system            | Semantic versions, SHA-256 hashes, strict variables, metadata, and trusted/untrusted layer provenance                                      |
+| Prompt system            | Semantic versions, SHA-256 hashes, strict variables, trusted/untrusted provenance, and deterministic prompt-injection signals              |
 | Input parsing            | JSON, YAML, Markdown, text, and structured-task normalization                                                                              |
 | Observability            | Append-only events, SQLite/JSONL storage, structured logs, task traces, Mermaid delegation graphs, metrics, budgets, and monitors          |
 | Evaluation               | Nine deterministic rules, eight diagnostic dimensions, assertions, YAML specs, run comparison, prompt regression, and optional model judge |

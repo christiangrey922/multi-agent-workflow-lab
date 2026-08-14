@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
-### Planned
+### Added
 
-- No unreleased changes recorded.
+- Deterministic `PromptInjectionScanner` signals for untrusted user, tool, MCP, and child-agent prompt layers.
+- Structured `security.prompt_injection.detected` trace events with source, category, severity, indicator IDs, and content hashes.
+- Focused scanner, benign-negative, trace-emission, and MCP-resource integration tests plus expanded red-team fixtures.
 
 ## [0.1.0] - 2026-08-12
 

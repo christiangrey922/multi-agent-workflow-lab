@@ -14,6 +14,7 @@ import {
   type ApprovalRequest,
   type JsonValue,
   type MonitorAlert,
+  type PromptInjectionSignal,
   type ResourceBudget,
   type RuntimeEvent,
   type Usage,
@@ -66,6 +67,45 @@ export class EventBus {
     return [...this.#events];
   }
 }
+
+export interface PromptInjectionEventContext {
+  workflowId: string;
+  taskId?: string | null;
+  agentId?: string | null;
+  traceId: string;
+  spanId?: string;
+}
+
+/** Emits diagnostic scanner results without changing authorization or control flow. */
+export const emitPromptInjectionSignals = async (
+  eventBus: EventBus,
+  signals: readonly PromptInjectionSignal[],
+  context: PromptInjectionEventContext,
+): Promise<RuntimeEvent[]> => {
+  const events: RuntimeEvent[] = [];
+  for (const signal of signals) {
+    events.push(
+      await eventBus.emit({
+        type: 'security.prompt_injection.detected',
+        workflowId: context.workflowId,
+        taskId: context.taskId ?? null,
+        agentId: context.agentId ?? null,
+        traceId: context.traceId,
+        ...(context.spanId ? { spanId: context.spanId } : {}),
+        payload: {
+          signalId: signal.id,
+          source: signal.source,
+          categories: signal.categories,
+          severity: signal.severity,
+          matchedIndicators: signal.matchedIndicators,
+          contentHash: signal.contentHash,
+          detectedAt: signal.detectedAt,
+        },
+      }),
+    );
+  }
+  return events;
+};
 
 export interface StructuredLogger {
   info(message: string, data?: Record<string, unknown>): void;
@@ -143,6 +183,10 @@ const describe = (type: string, payload: Record<string, unknown>): string => {
     return `REJECT invalid agent action [${textValue(payload.code)}]: ${textValue(payload.message)}`;
   }
   if (type === 'prompt.assembled') return `prompt assembled ${textValue(payload.promptHash)}`;
+  if (type === 'security.prompt_injection.detected') {
+    const categories = Array.isArray(payload.categories) ? payload.categories.join(', ') : '-';
+    return `prompt-injection signal source=${textValue(payload.source)} severity=${textValue(payload.severity)} categories=${categories}`;
+  }
   return type;
 };
 
@@ -557,6 +601,7 @@ export class TraceTreeRenderer {
           'tool.requested',
           'tool.completed',
           'tool.failed',
+          'security.prompt_injection.detected',
           'delegation.requested',
           'delegation.result.accepted',
           'task.completed',
@@ -634,6 +679,10 @@ const traceLabel = (event: RuntimeEvent): string => {
   const payload = asRecord(event.payload);
   if (event.type === 'agent.action.parsed') return `model action ${stringValue(payload.action)}`;
   if (event.type === 'tool.requested') return `tool ${stringValue(payload.toolName)}`;
+  if (event.type === 'security.prompt_injection.detected') {
+    const categories = Array.isArray(payload.categories) ? payload.categories.join(', ') : '';
+    return `prompt-injection signal ${stringValue(payload.source)} ${stringValue(payload.severity)}${categories ? ` [${categories}]` : ''}`;
+  }
   if (event.type === 'delegation.requested')
     return `delegate to ${stringValue(payload.targetAgentId)}`;
   return event.type;

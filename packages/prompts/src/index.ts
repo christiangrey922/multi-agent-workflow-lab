@@ -12,7 +12,10 @@ import {
   type JsonValue,
   type PromptLayer,
   type PromptDefinition,
+  type PromptInjectionSignal,
+  type PromptInjectionSource,
 } from '@mawl/core';
+import { PromptInjectionScanner } from '@mawl/security';
 import { parse } from 'yaml';
 
 export interface RegisteredPrompt extends PromptDefinition {
@@ -148,6 +151,7 @@ export interface SystemPromptProcessorOptions {
   runtimePolicy: string;
   securityPolicy: string;
   maxVariableBytes?: number;
+  promptInjectionScanner?: PromptInjectionScanner;
 }
 
 export interface SystemPromptInput {
@@ -164,12 +168,14 @@ export interface SystemPromptInput {
 
 export class SystemPromptProcessor {
   readonly #options: Readonly<SystemPromptProcessorOptions>;
+  readonly #promptInjectionScanner: PromptInjectionScanner;
 
   public constructor(
     private readonly registry: PromptRegistry,
     options: SystemPromptProcessorOptions,
   ) {
     this.#options = Object.freeze({ ...options });
+    this.#promptInjectionScanner = options.promptInjectionScanner ?? new PromptInjectionScanner();
   }
 
   public process(input: SystemPromptInput): DetailedPromptAssembly {
@@ -192,6 +198,7 @@ export class SystemPromptProcessor {
         provenance: `prompt-registry:${agentPrompt.id}@${agentPrompt.version}`,
       },
     ];
+    const promptInjectionSignals: PromptInjectionSignal[] = [];
     if (input.workflowInstructions) {
       layers.push(
         trustedLayer('workflow.instructions', 'workflow', input.workflowInstructions, 'workflow'),
@@ -200,15 +207,43 @@ export class SystemPromptProcessor {
     if (input.taskInstructions) {
       layers.push(trustedLayer('task.instructions', 'task', input.taskInstructions, 'task'));
     }
-    appendUntrusted(layers, 'user.input', 'user_input', input.userInput);
+    appendUntrusted(
+      layers,
+      promptInjectionSignals,
+      this.#promptInjectionScanner,
+      'user.input',
+      'user_input',
+      input.userInput,
+    );
     for (const [index, output] of (input.toolOutput ?? []).entries()) {
-      appendUntrusted(layers, `tool.output.${index}`, 'tool_output', output);
+      appendUntrusted(
+        layers,
+        promptInjectionSignals,
+        this.#promptInjectionScanner,
+        `tool.output.${index}`,
+        'tool_output',
+        output,
+      );
     }
     for (const [index, output] of (input.mcpOutput ?? []).entries()) {
-      appendUntrusted(layers, `mcp.output.${index}`, 'mcp_output', output);
+      appendUntrusted(
+        layers,
+        promptInjectionSignals,
+        this.#promptInjectionScanner,
+        `mcp.output.${index}`,
+        'mcp_output',
+        output,
+      );
     }
     for (const [index, output] of (input.childOutput ?? []).entries()) {
-      appendUntrusted(layers, `child.output.${index}`, 'child_output', output);
+      appendUntrusted(
+        layers,
+        promptInjectionSignals,
+        this.#promptInjectionScanner,
+        `child.output.${index}`,
+        'child_output',
+        output,
+      );
     }
     if (input.runtimeContext !== undefined) {
       layers.push(
@@ -237,6 +272,7 @@ export class SystemPromptProcessor {
       renderedHash: sha256(rendered),
       variables: input.variables,
       redactions: [],
+      promptInjectionSignals,
     });
   }
 }
@@ -258,12 +294,15 @@ const trustedLayer = (
 
 const appendUntrusted = (
   layers: PromptLayer[],
+  signals: PromptInjectionSignal[],
+  scanner: PromptInjectionScanner,
   id: string,
-  source: PromptLayer['source'],
+  source: PromptInjectionSource,
   value: JsonValue | undefined,
 ): void => {
   if (value === undefined) return;
   const serialized = JSON.stringify(asJsonValue(value));
+  signals.push(...scanner.scan({ content: serialized, source }));
   const content = `<untrusted-data source="${source}">\n${serialized}\n</untrusted-data>`;
   layers.push({
     id,

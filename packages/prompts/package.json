@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mawl/core": "workspace:*",
+    "@mawl/security": "workspace:*",
     "yaml": "^2.8.1"
   },
   "devDependencies": {

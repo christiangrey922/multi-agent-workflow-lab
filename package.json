@@ -26,7 +26,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "vitest run tests/lab.test.ts -t 'mandatory end-to-end'",
-    "test:security": "vitest run tests/security/security.test.ts",
+    "test:security": "vitest run tests/security",
     "test:lab": "vitest run tests/lab.test.ts",
     "mawl": "pnpm --filter @mawl/cli start",
     "demo": "pnpm build && pnpm --filter @mawl/cli start run workflows/03-review-chain.yaml '{\"topic\":\"observable delegation\"}'",

@@ -333,6 +333,9 @@ importers:
       '@mawl/core':
         specifier: workspace:*
         version: link:../core
+      '@mawl/security':
+        specifier: workspace:*
+        version: link:../security
       yaml:
         specifier: ^2.8.1
         version: 2.9.0

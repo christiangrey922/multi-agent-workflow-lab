@@ -483,6 +483,38 @@ export type RequestPermissionAction = z.infer<typeof RequestPermissionActionSche
 export type AgentAction = z.infer<typeof AgentActionSchema>;
 
 export const PromptTrustSchema = z.enum(['trusted', 'untrusted']);
+export const PromptInjectionSourceSchema = z.enum([
+  'user_input',
+  'tool_output',
+  'mcp_output',
+  'child_output',
+]);
+export type PromptInjectionSource = z.infer<typeof PromptInjectionSourceSchema>;
+
+export const PromptInjectionCategorySchema = z.enum([
+  'instruction_override',
+  'authority_impersonation',
+  'policy_disable_attempt',
+  'secret_exfiltration_request',
+  'tool_activation_request',
+  'unknown_suspicious_instruction',
+]);
+export type PromptInjectionCategory = z.infer<typeof PromptInjectionCategorySchema>;
+
+export const PromptInjectionSeveritySchema = z.enum(['info', 'warning', 'high']);
+export type PromptInjectionSeverity = z.infer<typeof PromptInjectionSeveritySchema>;
+
+export const PromptInjectionSignalSchema = z.object({
+  id: IdSchema,
+  source: PromptInjectionSourceSchema,
+  categories: z.array(PromptInjectionCategorySchema).min(1),
+  severity: PromptInjectionSeveritySchema,
+  matchedIndicators: z.array(z.string().min(1)).min(1),
+  contentHash: z.string().regex(/^[a-f0-9]{64}$/),
+  detectedAt: IsoDateSchema,
+});
+export type PromptInjectionSignal = z.infer<typeof PromptInjectionSignalSchema>;
+
 export const PromptLayerSourceSchema = z.enum([
   'runtime_policy',
   'security_policy',
@@ -517,6 +549,7 @@ export const DetailedPromptAssemblySchema = z.object({
   renderedHash: z.string().regex(/^[a-f0-9]{64}$/),
   variables: z.record(z.string(), JsonValueSchema),
   redactions: z.array(z.string()),
+  promptInjectionSignals: z.array(PromptInjectionSignalSchema).default([]),
 });
 export type DetailedPromptAssembly = z.infer<typeof DetailedPromptAssemblySchema>;
 
